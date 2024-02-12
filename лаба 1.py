@@ -2,8 +2,9 @@ import pandas as pd
 import time
 from matplotlib import pyplot as plt
 
-# пирамидальная сортировка
+"""This module provides a collection of functions for working with strings."""
 
+# @brief пирамидальная сортировка
 # идём снизу вверх 
 def sift_up(arr): 
     for i in range(len(arr)): 
@@ -43,8 +44,7 @@ def heap_sort(mas):
         last_index -=1
     return arr 
 
-# быстрая сортировка
-
+# @brief быстрая сортировка
 def quick_sort(mas):
     if len(mas)<=1: return mas
     less = []
@@ -61,8 +61,7 @@ def quick_sort(mas):
     return quick_sort(less)+equal+quick_sort(more)
    
 
-# сортировка слиянием
-
+# @brief сортировка слиянием
 def merge_sort(mas):
     if len(mas)<=1: return mas
     left=merge_sort(mas[:len(mas)//2])
@@ -80,6 +79,7 @@ def merge_sort(mas):
     if j<len(right): res+=right[j:]
     return res
 
+# @brief Массив данных о членах сборной команды по футболу: страна, ФИО футболиста, название клуба, амплуа (вратарь, защитник, полузащитник, нападающий), количества матчей, проведенных за сборную, количество забитых за сборную мячей (для вратарей – пропущенных со знаком «минус»)
 class footballer:
     def __init__(self, country, name, club, role, match_count, goal_count):
         self.country = country
@@ -92,7 +92,8 @@ class footballer:
     def __str__(self):
         return "({0},{1},{2},{3},{4},{5})".format(self.country, self.name, self.club, self.role, self.match_count, self.goal_count)
 
-    #<
+    # @brief Перегрузка операторов для сравнения по полям – количество матчей, ФИО, количество мячей (по убыванию)
+    # @brief <
     def __lt__(self, other):
         if self.match_count < other.match_count:
             return True
@@ -106,7 +107,7 @@ class footballer:
             else:
                 return True if self.goal_count > other.goal_count else False
 
-    #>
+    # @brief >
     def __gt__(self, other):
         if self.match_count > other.match_count:
             return True
@@ -120,15 +121,15 @@ class footballer:
             else:
                 return True if self.goal_count < other.goal_count else False
                 
-    #<=
+    # @brief <=
     def __le__(self, other):
         return False if self > other else True
 
-    #>=
+    # @brief >=
     def __ge__(self, other):
         return False if self < other else True
 
-
+# @brief Подготовка данных для отправки в функции сортировок
 df_1 = pd.read_csv('100_samples.csv')
 mas_1 = []
 for i in range(len(df_1)):
@@ -171,9 +172,12 @@ for i in range(len(df_7)):
     mas_7.append(footballer(df_7["Страна"][i], df_7["ФИО"][i], df_7["Клуб"][i], df_7["Амплуа"][i], df_7["Количество матчей"][i], 
                             df_7["Количество мячей"][i]))
     
+# @brief Все датасеты в одном списке
 common_mas=[mas_1, mas_2, mas_3, mas_4, mas_5, mas_6, mas_7]
+# @brief Координаты х для графиков зависимости времени от объема данных
 lens=[len(elem) for elem in common_mas]
 
+# @brief Отправка данных для пирамидальной сортировки. Замер времени. Создание файлов с отсортированными данными
 heap_sort_times=[]
 for elem in common_mas:
     start = time.time()
@@ -183,6 +187,7 @@ for elem in common_mas:
         for elem in mas_heap_sort:
             f.write(f'{elem.country} {elem.name} {elem.club} {elem.role} {elem.match_count} {elem.goal_count}\n')
 
+# @brief Отправка данных для быстрой сортировки. Замер времени. Создание файлов с отсортированными данными
 quick_sort_times=[]
 for elem in common_mas:
     start = time.time()
@@ -192,6 +197,7 @@ for elem in common_mas:
         for elem in mas_quick_sort:
             f.write(f'{elem.country} {elem.name} {elem.club} {elem.role} {elem.match_count} {elem.goal_count}\n')
 
+# @brief Отправка данных для сортировки слиянием. Замер времени. Создание файлов с отсортированными данными
 merge_sort_times=[]
 for elem in common_mas:
     start = time.time()
@@ -201,6 +207,7 @@ for elem in common_mas:
         for elem in mas_merge_sort:
             f.write(f'{elem.country} {elem.name} {elem.club} {elem.role} {elem.match_count} {elem.goal_count}\n')
 
+# @brief Построение графиков зависимости времени работы каждой из сортировок от объема данных
 plt.plot(lens,heap_sort_times)
 plt.plot(lens,quick_sort_times)
 plt.plot(lens,merge_sort_times)
